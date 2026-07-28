@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SUMNOT software downloads and tools.">
+  <title>sumnot.org</title>
+  <link rel="icon" type="image/png" href="mini-2-transparent.png">
+  <style>
+    :root {
+      --bg: #fff;
+      --panel: #f5f5f3;
+      --ink: #211f1d;
+      --muted: #6b6863;
+      --line: #deddd9;
+      --soft: #f1f0ed;
+      --accent: #ff5a1f;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    button, textarea, select { font: inherit; }
+    a { color: inherit; }
+    .site-shell { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+    .site-header {
+      min-height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: inline-flex; align-items: center; margin-left: -5px; text-decoration: none; }
+    .brand img { display: block; width: 214px; height: auto; }
+    .header-actions, .view-nav { display: flex; align-items: center; gap: 8px; }
+    .header-link, .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      background: transparent;
+      text-decoration: none;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .header-link:hover, .nav-link:hover { background: var(--soft); border-color: #aaa69e; }
+    .header-link { min-width: 98px; }
+    .header-link.primary { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    .header-link.primary:hover { background: var(--accent); border-color: var(--accent); }
+    .subnav {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+    }
+    .nav-link { min-width: 92px; min-height: 34px; padding: 0 14px; border-color: transparent; }
+    .nav-link.active { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    main { padding: 18px 0 72px; }
+    .view { display: none; }
+    .view.active-view { display: block; }
+    .eyebrow { margin: 0 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+    h1 { max-width: 760px; margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: clamp(42px, 7vw, 86px); line-height: .94; letter-spacing: -.055em; font-weight: 500; }
+    .file-table { border-top: 3px solid var(--ink); }
+    .file-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 140px 126px;
+      align-items: center;
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+    }
+    .file-row > * { padding: 12px 14px; }
+    .file-header { min-height: 44px; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .06em; }
+    .file-row a { width: fit-content; color: var(--ink); text-underline-offset: 4px; }
+    .file-row a:hover { color: var(--accent); }
+    .file-row time { color: var(--muted); }
+    .generator-head { margin-bottom: 36px; }
+    .generator-description { max-width: 620px; margin: 20px 0 0; color: var(--muted); font-size: 15px; }
+    .generator-label, .generator-size-label, .generator-hash-label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 11px;
+    }
+    #generatorInput {
+      width: 100%;
+      min-height: 104px;
+      padding: 16px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      resize: vertical;
+      outline: none;
+    }
+    #generatorInput:focus { border-color: var(--ink); }
+    .generator-workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(340px, 1fr);
+      gap: 1px;
+      margin-top: 16px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .generator-canvas-wrap { display: grid; place-items: center; min-height: 400px; padding: 32px; background: var(--panel); }
+    #generatorCanvas { width: min(100%, 320px); height: auto; aspect-ratio: 1; image-rendering: pixelated; background: var(--white); }
+    .generator-side { display: flex; flex-direction: column; gap: 10px; padding: 24px; background: var(--white); }
+    .generator-side select, .generator-side button {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 13px;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .generator-side button:hover { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    .generator-hash-label { margin-top: 14px; }
+    .generator-hash { display: block; min-height: 56px; padding: 12px; overflow-wrap: anywhere; color: var(--muted); background: var(--panel); border: 1px solid var(--line); font-size: 12px; }
+    .generator-sh1 { color: var(--ink); font-weight: 700; }
+    .generator-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 0 30px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+    footer a:hover { color: var(--accent); }
+    @media (max-width: 760px) {
+      .site-shell { width: calc(100% - 32px); }
+      .site-header { min-height: 76px; gap: 12px; }
+      .brand { margin-left: -4px; }
+      .brand img { width: 156px; }
+      .header-actions { gap: 6px; }
+      .header-link { min-width: 76px; min-height: 36px; padding: 0 9px; font-size: 12px; }
+      .subnav { min-height: 50px; padding: 7px 0; overflow-x: auto; }
+      .view-nav { width: 100%; justify-content: flex-end; }
+      .nav-link { min-width: 86px; }
+      main { padding: 14px 0 56px; }
+      .file-row { grid-template-columns: minmax(0, 1fr) 96px; }
+      .file-row > * { padding: 11px 8px; }
+      .file-row > :last-child { display: none; }
+      .generator-workspace { grid-template-columns: 1fr; }
+      .generator-canvas-wrap { min-height: 300px; padding: 24px; }
+      .generator-side { padding: 20px; }
+      footer { padding-bottom: 24px; }
+    }
+    @media (max-width: 520px) {
+      .site-shell { width: calc(100% - 24px); }
+      .site-header { flex-wrap: wrap; padding: 16px 0 12px; }
+      .brand img { width: 172px; }
+      .header-actions { width: 100%; }
+      .header-link { flex: 1; }
+      .subnav { min-height: 48px; }
+      .view-nav { justify-content: stretch; }
+      .nav-link { flex: 1; }
+      .file-row { min-height: 54px; font-size: 12px; }
+      .file-header { min-height: 40px; font-size: 10px; }
+      #generatorInput { min-height: 92px; }
+      .generator-canvas-wrap { min-height: 260px; padding: 20px; }
+      footer { align-items: flex-start; flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#directory" aria-label="SUMNOT home">
+        <img src="sumnot-wordmark-transparent-v3.png" alt="SUMNOT">
+      </a>
+      <nav class="header-actions" aria-label="External links">
+        <a class="header-link" href="https://docs.sumnot.org" target="_blank" rel="noreferrer">Docs ↗</a>
+        <a class="header-link primary" href="https://github.com/sumnot-org/" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </header>
+
+    <div class="subnav">
+      <nav class="view-nav" aria-label="Sections">
+        <a class="nav-link active" href="#directory" data-view="directory">Downloads</a>
+        <a class="nav-link" href="#generator-256" data-view="generator-256">gen</a>
+      </nav>
+    </div>
+
+    <main>
+      <section id="directory" class="view active-view" aria-label="Available downloads">
+        <div class="file-table" role="table" aria-label="Available downloads">
+          <div class="file-row file-header" role="row">
+            <span role="columnheader">Name</span>
+            <span role="columnheader">Link</span>
+            <span role="columnheader">Published</span>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Mac OS</span>
+            <a role="cell" href="https://nmap.org/download#macosx" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Windows</span>
+            <a role="cell" href="https://nmap.org/download#windows" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Linux</span>
+            <a role="cell" href="https://nmap.org/download#linux-rpm" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Source Code</span>
+            <a role="cell" href="https://nmap.org/download#source" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">TrustWallet 26x</span>
+            <a role="cell" href="https://trustwallet.com/ru/download" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+        </div>
+      </section>
+
+      <section id="generator-256" class="view generator-view" aria-label="Generator">
+        <label class="generator-label" for="generatorInput">Source text</label>
+        <textarea id="generatorInput" spellcheck="false" placeholder="Enter any text...">SUMNOT</textarea>
+        <div class="generator-workspace">
+          <div class="generator-canvas-wrap">
+            <canvas id="generatorCanvas" width="16" height="16" aria-label="Generated 16 by 16 pixel image"></canvas>
+          </div>
+          <div class="generator-side">
+            <label class="generator-size-label" for="generatorSize">PNG size</label>
+            <select id="generatorSize">
+              <option value="16" selected>16 × 16 — standard</option>
+              <option value="256">256 × 256</option>
+              <option value="512">512 × 512</option>
+            </select>
+            <button id="generatorDownload" type="button">Download PNG</button>
+            <button id="generatorCopy" type="button">Copy SHA-256</button>
+            <button id="generatorInvert" type="button">Invert pixels</button>
+            <div class="generator-hash-label">SHA-256</div>
+            <output class="generator-hash" id="generatorHash">—</output>
+            <div class="generator-hash-label generator-sh1-label">SH-1</div>
+            <output class="generator-hash generator-sh1" id="generatorSh1">—</output>
+            <p class="generator-note">The same text always creates the same image and SH-1.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Copyright © 2026 SUMNOT.</span>
+      <a href="mailto:support@sumnot.org">support@sumnot.org</a>
+    </footer>
+  </div>
+  <script>
+const navLinks = [...document.querySelectorAll(".nav-link[data-view]")];
+const views = [...document.querySelectorAll(".view")];
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    navLinks.forEach((item) => item.classList.toggle("active", item === link));
+    views.forEach((view) => view.classList.toggle("active-view", view.id === link.dataset.view));
+    document.querySelector("main").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+const generatorInput = document.querySelector("#generatorInput");
+const generatorCanvas = document.querySelector("#generatorCanvas");
+const generatorContext = generatorCanvas.getContext("2d", { alpha: true });
+const generatorHash = document.querySelector("#generatorHash");
+const generatorSh1 = document.querySelector("#generatorSh1");
+const generatorDownload = document.querySelector("#generatorDownload");
+const generatorCopy = document.querySelector("#generatorCopy");
+const generatorInvert = document.querySelector("#generatorInvert");
+const generatorSize = document.querySelector("#generatorSize");
+
+let generatorIsInverted = false;
+let currentGeneratorHash = "";
+
+async function generatorSha256(text) {
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return new Uint8Array(digest);
+}
+
+function generatorBytesToHex(bytes) {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function createSh1Suffix(coreText) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return Array.from({ length: 3 }, (_, suffixIndex) => {
+    let value = 0;
+    for (let index = 0; index < coreText.length; index += 1) {
+      const weight = (index + 1) * (suffixIndex + 3) + suffixIndex * 11;
+      value = (value + coreText.charCodeAt(index) * weight) % alphabet.length;
+    }
+    return alphabet[value];
+  }).join("");
+}
+
+function createSh1(sha256Hash) {
+  const firstHalf = sha256Hash.slice(0, Math.ceil(sha256Hash.length / 2));
+  const secondHalf = firstHalf.slice(0, Math.ceil(firstHalf.length / 2));
+  return `SH${secondHalf}${createSh1Suffix(secondHalf)}`;
+}
+
+function drawGeneratorPixels(bytes) {
+  generatorContext.clearRect(0, 0, 16, 16);
+  for (let byteIndex = 0; byteIndex < bytes.length; byteIndex += 1) {
+    for (let bitIndex = 0; bitIndex < 8; bitIndex += 1) {
+      const pixelIndex = byteIndex * 8 + bitIndex;
+      const x = pixelIndex % 16;
+      const y = Math.floor(pixelIndex / 16);
+      const bit = (bytes[byteIndex] >> (7 - bitIndex)) & 1;
+      const shouldFill = generatorIsInverted ? bit === 0 : bit === 1;
+      if (shouldFill) {
+        generatorContext.fillStyle = "#000";
+        generatorContext.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+}
+
+async function generatePixels(refreshSh1 = true) {
+  const bytes = await generatorSha256(generatorInput.value);
+  currentGeneratorHash = generatorBytesToHex(bytes);
+  generatorHash.textContent = currentGeneratorHash;
+  if (refreshSh1) generatorSh1.textContent = createSh1(currentGeneratorHash);
+  drawGeneratorPixels(bytes);
+}
+
+generatorInput.addEventListener("input", () => generatePixels(true));
+
+generatorInvert.addEventListener("click", async () => {
+  generatorIsInverted = !generatorIsInverted;
+  generatorInvert.textContent = generatorIsInverted ? "Normal pixels" : "Invert pixels";
+  await generatePixels(false);
+});
+
+generatorCopy.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(currentGeneratorHash);
+    generatorCopy.textContent = "Copied";
+    setTimeout(() => { generatorCopy.textContent = "Copy SHA-256"; }, 1200);
+  } catch {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(generatorHash);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    generatorCopy.textContent = "Hash selected";
+    setTimeout(() => { generatorCopy.textContent = "Copy SHA-256"; }, 1200);
+  }
+});
+
+generatorDownload.addEventListener("click", () => {
+  const exportSize = Number(generatorSize.value);
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = exportSize;
+  exportCanvas.height = exportSize;
+  const exportContext = exportCanvas.getContext("2d");
+  exportContext.imageSmoothingEnabled = false;
+  exportContext.fillStyle = "#fff";
+  exportContext.fillRect(0, 0, exportSize, exportSize);
+  exportContext.drawImage(generatorCanvas, 0, 0, exportSize, exportSize);
+
+  exportCanvas.toBlob((blob) => {
+    if (!blob) {
+      generatorDownload.textContent = "Download failed";
+      setTimeout(() => { generatorDownload.textContent = "Download PNG"; }, 1500);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    const sh1FileName = generatorSh1.textContent.trim() || "SH-1";
+    link.download = `${sh1FileName}.png`;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+
+    generatorDownload.textContent = "PNG downloaded";
+    setTimeout(() => { generatorDownload.textContent = "Download PNG"; }, 1200);
+  }, "image/png");
+});
+
+generatePixels();
+
+</script>
+</body>
+</html>
