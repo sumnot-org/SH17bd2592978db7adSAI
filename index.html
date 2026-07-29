@@ -1,0 +1,927 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="SUMNOT software downloads and tools.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SUMNOT">
+  <meta name="application-name" content="SUMNOT">
+  <title>sumnot.org</title>
+  <link rel="icon" type="image/png" href="mini-2-transparent.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root {
+      --bg: #fff;
+      --panel: #f5f5f3;
+      --ink: #211f1d;
+      --muted: #6b6863;
+      --line: #deddd9;
+      --soft: #f1f0ed;
+      --accent: #ff5a1f;
+      --getgems: #0098ea;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    button, textarea, select, input { font: inherit; }
+    a { color: inherit; }
+    .site-shell { width: min(1200px, calc(100% - 48px)); margin: 0 auto; }
+    .site-header {
+      min-height: 86px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: inline-flex; align-items: center; margin-left: -5px; text-decoration: none; }
+    .brand img { display: block; width: 214px; height: auto; }
+    .header-actions, .view-nav { display: flex; align-items: center; gap: 8px; }
+    .header-link, .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      background: transparent;
+      text-decoration: none;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .header-link:hover, .nav-link:hover { background: var(--soft); border-color: #aaa69e; }
+    .header-link.getgems-link:hover,
+    .header-link.getgems-link:focus-visible {
+      color: var(--white);
+      background: var(--getgems);
+      border-color: var(--getgems);
+      outline: none;
+    }
+    .header-link { min-width: 98px; }
+    .header-link.primary { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    .header-link.primary:hover { background: var(--accent); border-color: var(--accent); }
+    .subnav {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+    }
+    .nav-link { min-width: 92px; min-height: 34px; padding: 0 14px; border-color: transparent; }
+    .nav-link.active { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    main { padding: 18px 0 72px; }
+    .view { display: none; }
+    .view.active-view { display: block; }
+    .eyebrow { margin: 0 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+    h1 { max-width: 760px; margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: clamp(42px, 7vw, 86px); line-height: .94; letter-spacing: -.055em; font-weight: 500; }
+    .file-table { border-top: 3px solid var(--ink); }
+    .file-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 140px 126px;
+      align-items: center;
+      min-height: 58px;
+      border-bottom: 1px solid var(--line);
+    }
+    .file-row > * { padding: 12px 14px; }
+    .file-header { min-height: 44px; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: .06em; }
+    .file-row a { width: fit-content; color: var(--ink); text-underline-offset: 4px; }
+    .file-row a:hover { color: var(--accent); }
+    .file-row time { color: var(--muted); }
+    .generator-head { margin-bottom: 36px; }
+    .generator-description { max-width: 620px; margin: 20px 0 0; color: var(--muted); font-size: 15px; }
+    .generator-mode-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--ink);
+    }
+    .generator-mode-button {
+      min-width: 92px;
+      min-height: 36px;
+      padding: 0 14px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .generator-mode-button:hover { background: var(--soft); }
+    .generator-mode-button.active {
+      color: var(--white);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .generator-mode-panel { display: none; }
+    .generator-mode-panel.active { display: block; }
+    .generator-label, .generator-size-label, .generator-hash-label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 11px;
+    }
+    #generatorInput {
+      width: 100%;
+      min-height: 104px;
+      padding: 16px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      resize: vertical;
+      outline: none;
+    }
+    #generatorInput:focus { border-color: var(--ink); }
+    .generator-workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(340px, 1fr);
+      gap: 1px;
+      margin-top: 16px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .generator-canvas-wrap { display: grid; place-items: center; min-height: 400px; padding: 32px; background: var(--panel); }
+    #generatorCanvas { width: min(100%, 320px); height: auto; aspect-ratio: 1; image-rendering: pixelated; background: var(--white); }
+    .generator-side { display: flex; flex-direction: column; gap: 10px; padding: 24px; background: var(--white); }
+    .generator-side select, .generator-side button {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 13px;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 0;
+      cursor: pointer;
+    }
+    .generator-side button:hover { color: var(--white); background: var(--ink); border-color: var(--ink); }
+    .generator-hash-label { margin-top: 14px; }
+    .generator-hash { display: block; min-height: 56px; padding: 12px; overflow-wrap: anywhere; color: var(--muted); background: var(--panel); border: 1px solid var(--line); font-size: 12px; }
+    .generator-sh1 { color: var(--ink); font-weight: 700; }
+    .generator-note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .image-upload {
+      display: grid;
+      place-items: center;
+      min-height: 148px;
+      padding: 24px;
+      color: var(--muted);
+      background: var(--white);
+      border: 1px dashed #aaa69e;
+      cursor: pointer;
+      text-align: center;
+      transition: color .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .image-upload:hover,
+    .image-upload.drag-over {
+      color: var(--ink);
+      background: var(--panel);
+      border-color: var(--ink);
+    }
+    .image-upload strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: -.025em;
+    }
+    .image-upload small { display: block; font-size: 12px; }
+    .image-resize-workspace {
+      display: grid;
+      grid-template-columns: minmax(280px, 1.25fr) minmax(310px, .75fr);
+      gap: 1px;
+      margin-top: 16px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+    .image-preview-wrap {
+      display: grid;
+      place-items: center;
+      min-height: 430px;
+      padding: 32px;
+      overflow: hidden;
+      background-color: var(--panel);
+      background-image:
+        linear-gradient(45deg, #e7e6e2 25%, transparent 25%),
+        linear-gradient(-45deg, #e7e6e2 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #e7e6e2 75%),
+        linear-gradient(-45deg, transparent 75%, #e7e6e2 75%);
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+      background-size: 16px 16px;
+    }
+    #imageResizeCanvas {
+      display: none;
+      max-width: 100%;
+      max-height: 370px;
+      width: auto;
+      height: auto;
+      background: transparent;
+      box-shadow: 0 0 0 1px rgba(33, 31, 29, .12);
+    }
+    #imageResizeCanvas.ready { display: block; }
+    .image-preview-placeholder {
+      max-width: 280px;
+      padding: 18px;
+      color: var(--muted);
+      background: rgba(255,255,255,.86);
+      border: 1px solid var(--line);
+      text-align: center;
+      font-size: 12px;
+    }
+    .image-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 24px;
+      background: var(--white);
+    }
+    .image-control-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-size: 11px;
+    }
+    .image-controls select,
+    .image-controls input[type="number"],
+    .image-controls input[type="text"],
+    .image-controls button {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 13px;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 0;
+    }
+    .image-controls select,
+    .image-controls input[type="number"],
+    .image-controls input[type="text"] { outline: none; }
+    .image-controls select:focus,
+    .image-controls input[type="number"]:focus,
+    .image-controls input[type="text"]:focus { border-color: var(--ink); }
+    .image-controls input:disabled,
+    .image-controls select:disabled {
+      color: #aaa69e;
+      background: var(--soft);
+      cursor: not-allowed;
+    }
+    .image-dimensions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 9px;
+      align-items: end;
+    }
+    .image-dimension-separator {
+      padding-bottom: 12px;
+      color: var(--muted);
+    }
+    .image-ratio-control {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 38px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .image-ratio-control input { accent-color: var(--ink); }
+    .image-info {
+      min-height: 72px;
+      padding: 12px;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      font-size: 12px;
+      white-space: pre-line;
+    }
+    #imageDownload {
+      color: var(--white);
+      background: var(--ink);
+      border-color: var(--ink);
+      cursor: pointer;
+    }
+    #imageDownload:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+    #imageDownload:disabled {
+      color: #aaa69e;
+      background: var(--soft);
+      border-color: var(--line);
+      cursor: not-allowed;
+    }
+    .image-privacy-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 0 30px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+    footer a:hover { color: var(--accent); }
+    @media (max-width: 760px) {
+      .site-shell { width: calc(100% - 32px); }
+      .site-header { min-height: 76px; gap: 12px; }
+      .brand { margin-left: -4px; }
+      .brand img { width: 156px; }
+      .header-actions { gap: 6px; }
+      .header-link { min-width: 76px; min-height: 36px; padding: 0 9px; font-size: 12px; }
+      .subnav { min-height: 50px; padding: 7px 0; overflow-x: auto; }
+      .view-nav { width: 100%; justify-content: flex-end; }
+      .nav-link { min-width: 86px; }
+      main { padding: 14px 0 56px; }
+      .file-row { grid-template-columns: minmax(0, 1fr) 96px; }
+      .file-row > * { padding: 11px 8px; }
+      .file-row > :last-child { display: none; }
+      .generator-workspace { grid-template-columns: 1fr; }
+      .generator-canvas-wrap { min-height: 300px; padding: 24px; }
+      .generator-side { padding: 20px; }
+      .image-resize-workspace { grid-template-columns: 1fr; }
+      .image-preview-wrap { min-height: 320px; padding: 24px; }
+      #imageResizeCanvas { max-height: 290px; }
+      .image-controls { padding: 20px; }
+      footer { padding-bottom: 24px; }
+    }
+    @media (max-width: 520px) {
+      .site-shell { width: calc(100% - 24px); }
+      .site-header { flex-wrap: wrap; padding: 16px 0 12px; }
+      .brand img { width: 172px; }
+      .header-actions { width: 100%; }
+      .header-link { flex: 1; }
+      .subnav { min-height: 48px; }
+      .view-nav { justify-content: stretch; }
+      .nav-link { flex: 1; }
+      .file-row { min-height: 54px; font-size: 12px; }
+      .file-header { min-height: 40px; font-size: 10px; }
+      #generatorInput { min-height: 92px; }
+      .generator-canvas-wrap { min-height: 260px; padding: 20px; }
+      .generator-mode-button { flex: 1; }
+      .image-upload { min-height: 130px; padding: 20px; }
+      .image-preview-wrap { min-height: 260px; padding: 18px; }
+      #imageResizeCanvas { max-height: 230px; }
+      .image-dimensions { gap: 6px; }
+      .image-controls { padding: 16px; }
+      footer { align-items: flex-start; flex-direction: column; gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="brand" href="#directory" aria-label="SUMNOT home">
+        <img src="sumnot-wordmark-transparent-v3.png" alt="SUMNOT">
+      </a>
+      <nav class="header-actions" aria-label="External links">
+        <a class="header-link" href="https://docs.sumnot.org" target="_blank" rel="noreferrer">Docs ↗</a>
+        <a class="header-link getgems-link" href="https://getgems.io/iliziroff" target="_blank" rel="noreferrer">Getgems ↗</a>
+        <a class="header-link primary" href="https://github.com/sumnot-org/" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+    </header>
+
+    <div class="subnav">
+      <nav class="view-nav" aria-label="Sections">
+        <a class="nav-link active" href="#directory" data-view="directory">Downloads</a>
+        <a class="nav-link" href="#generator-256" data-view="generator-256">gen</a>
+      </nav>
+    </div>
+
+    <main>
+      <section id="directory" class="view active-view" aria-label="Available downloads">
+        <div class="file-table" role="table" aria-label="Available downloads">
+          <div class="file-row file-header" role="row">
+            <span role="columnheader">Name</span>
+            <span role="columnheader">Link</span>
+            <span role="columnheader">Published</span>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Mac OS</span>
+            <a role="cell" href="https://nmap.org/download#macosx" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Windows</span>
+            <a role="cell" href="https://nmap.org/download#windows" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Linux</span>
+            <a role="cell" href="https://nmap.org/download#linux-rpm" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">Nmap 7.99 — Source Code</span>
+            <a role="cell" href="https://nmap.org/download#source" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+          <div class="file-row" role="row">
+            <span role="cell">TrustWallet 26x</span>
+            <a role="cell" href="https://trustwallet.com/ru/download" target="_blank" rel="noreferrer">Download ↘</a>
+            <time role="cell" datetime="2026-07-20">2026-07-20</time>
+          </div>
+        </div>
+      </section>
+
+      <section id="generator-256" class="view generator-view" aria-label="Generator">
+        <div class="generator-mode-nav" role="tablist" aria-label="Generator tools">
+          <button class="generator-mode-button active" type="button" role="tab" aria-selected="true" data-generator-mode="text">text</button>
+          <button class="generator-mode-button" type="button" role="tab" aria-selected="false" data-generator-mode="image">image</button>
+        </div>
+
+        <div class="generator-mode-panel active" data-generator-panel="text" role="tabpanel">
+          <label class="generator-label" for="generatorInput">Source text</label>
+          <textarea id="generatorInput" spellcheck="false" placeholder="Enter any text...">SUMNOT</textarea>
+          <div class="generator-workspace">
+            <div class="generator-canvas-wrap">
+              <canvas id="generatorCanvas" width="16" height="16" aria-label="Generated 16 by 16 pixel image"></canvas>
+            </div>
+            <div class="generator-side">
+              <label class="generator-size-label" for="generatorSize">PNG size</label>
+              <select id="generatorSize">
+                <option value="16" selected>16 × 16 — standard</option>
+                <option value="256">256 × 256</option>
+                <option value="512">512 × 512</option>
+              </select>
+              <button id="generatorDownload" type="button">Download PNG</button>
+              <button id="generatorCopy" type="button">Copy SHA-256</button>
+              <button id="generatorInvert" type="button">Invert pixels</button>
+              <div class="generator-hash-label">SHA-256</div>
+              <output class="generator-hash" id="generatorHash">—</output>
+              <div class="generator-hash-label generator-sh1-label">SH-1</div>
+              <output class="generator-hash generator-sh1" id="generatorSh1">—</output>
+              <p class="generator-note">The same text always creates the same image and SH-1.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="generator-mode-panel" data-generator-panel="image" role="tabpanel">
+          <input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+          <div class="image-upload" id="imageUpload" role="button" tabindex="0" aria-controls="imageInput">
+            <div>
+              <strong>Drop an image here</strong>
+              <small>or click to select PNG, JPG, WEBP or GIF · max 25 MB</small>
+            </div>
+          </div>
+
+          <div class="image-resize-workspace">
+            <div class="image-preview-wrap">
+              <div class="image-preview-placeholder" id="imagePreviewPlaceholder">Upload an image to preview the resized PNG.</div>
+              <canvas id="imageResizeCanvas" aria-label="Resized image preview"></canvas>
+            </div>
+            <div class="image-controls">
+              <div>
+                <label class="image-control-label" for="imageFileName">Image name (optional)</label>
+                <input id="imageFileName" type="text" maxlength="80" placeholder="Leave empty for an automatic SH name" disabled>
+              </div>
+              <div>
+                <label class="image-control-label" for="imagePreset">Resize</label>
+                <select id="imagePreset" disabled>
+                  <option value="0.75">75% of original</option>
+                  <option value="0.5" selected>50% of original</option>
+                  <option value="0.25">25% of original</option>
+                  <option value="custom">Custom resolution</option>
+                </select>
+              </div>
+
+              <div class="image-dimensions">
+                <label>
+                  <span class="image-control-label">Width</span>
+                  <input id="imageWidth" type="number" min="1" step="1" inputmode="numeric" disabled>
+                </label>
+                <span class="image-dimension-separator">×</span>
+                <label>
+                  <span class="image-control-label">Height</span>
+                  <input id="imageHeight" type="number" min="1" step="1" inputmode="numeric" disabled>
+                </label>
+              </div>
+
+              <label class="image-ratio-control">
+                <input id="imageKeepRatio" type="checkbox" checked disabled>
+                Keep original aspect ratio
+              </label>
+
+              <output class="image-info" id="imageInfo">No image selected.</output>
+              <button id="imageDownload" type="button" disabled>Download PNG</button>
+              <p class="image-privacy-note">Empty name → SH-0000x0000-HH-MM-SS.png. Processed locally in your browser.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Copyright © 2026 SUMNOT.</span>
+      <a href="mailto:support@sumnot.org">support@sumnot.org</a>
+    </footer>
+  </div>
+  <script>
+const navLinks = [...document.querySelectorAll(".nav-link[data-view]")];
+const views = [...document.querySelectorAll(".view")];
+const generatorModeButtons = [...document.querySelectorAll("[data-generator-mode]")];
+const generatorModePanels = [...document.querySelectorAll("[data-generator-panel]")];
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    navLinks.forEach((item) => item.classList.toggle("active", item === link));
+    views.forEach((view) => view.classList.toggle("active-view", view.id === link.dataset.view));
+    document.querySelector("main").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+generatorModeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    generatorModeButtons.forEach((item) => {
+      const isActive = item === button;
+      item.classList.toggle("active", isActive);
+      item.setAttribute("aria-selected", String(isActive));
+    });
+    generatorModePanels.forEach((panel) => {
+      panel.classList.toggle("active", panel.dataset.generatorPanel === button.dataset.generatorMode);
+    });
+  });
+});
+
+const generatorInput = document.querySelector("#generatorInput");
+const generatorCanvas = document.querySelector("#generatorCanvas");
+const generatorContext = generatorCanvas.getContext("2d", { alpha: true });
+const generatorHash = document.querySelector("#generatorHash");
+const generatorSh1 = document.querySelector("#generatorSh1");
+const generatorDownload = document.querySelector("#generatorDownload");
+const generatorCopy = document.querySelector("#generatorCopy");
+const generatorInvert = document.querySelector("#generatorInvert");
+const generatorSize = document.querySelector("#generatorSize");
+
+let generatorIsInverted = false;
+let currentGeneratorHash = "";
+
+async function generatorSha256(text) {
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return new Uint8Array(digest);
+}
+
+function generatorBytesToHex(bytes) {
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function createSh1Suffix(coreText) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  return Array.from({ length: 3 }, (_, suffixIndex) => {
+    let value = 0;
+    for (let index = 0; index < coreText.length; index += 1) {
+      const weight = (index + 1) * (suffixIndex + 3) + suffixIndex * 11;
+      value = (value + coreText.charCodeAt(index) * weight) % alphabet.length;
+    }
+    return alphabet[value];
+  }).join("");
+}
+
+function createSh1(sha256Hash) {
+  const firstHalf = sha256Hash.slice(0, Math.ceil(sha256Hash.length / 2));
+  const secondHalf = firstHalf.slice(0, Math.ceil(firstHalf.length / 2));
+  return `SH${secondHalf}${createSh1Suffix(secondHalf)}`;
+}
+
+function drawGeneratorPixels(bytes) {
+  generatorContext.clearRect(0, 0, 16, 16);
+  for (let byteIndex = 0; byteIndex < bytes.length; byteIndex += 1) {
+    for (let bitIndex = 0; bitIndex < 8; bitIndex += 1) {
+      const pixelIndex = byteIndex * 8 + bitIndex;
+      const x = pixelIndex % 16;
+      const y = Math.floor(pixelIndex / 16);
+      const bit = (bytes[byteIndex] >> (7 - bitIndex)) & 1;
+      const shouldFill = generatorIsInverted ? bit === 0 : bit === 1;
+      if (shouldFill) {
+        generatorContext.fillStyle = "#000";
+        generatorContext.fillRect(x, y, 1, 1);
+      }
+    }
+  }
+}
+
+async function generatePixels(refreshSh1 = true) {
+  const bytes = await generatorSha256(generatorInput.value);
+  currentGeneratorHash = generatorBytesToHex(bytes);
+  generatorHash.textContent = currentGeneratorHash;
+  if (refreshSh1) generatorSh1.textContent = createSh1(currentGeneratorHash);
+  drawGeneratorPixels(bytes);
+}
+
+generatorInput.addEventListener("input", () => generatePixels(true));
+
+generatorInvert.addEventListener("click", async () => {
+  generatorIsInverted = !generatorIsInverted;
+  generatorInvert.textContent = generatorIsInverted ? "Normal pixels" : "Invert pixels";
+  await generatePixels(false);
+});
+
+generatorCopy.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(currentGeneratorHash);
+    generatorCopy.textContent = "Copied";
+    setTimeout(() => { generatorCopy.textContent = "Copy SHA-256"; }, 1200);
+  } catch {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(generatorHash);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    generatorCopy.textContent = "Hash selected";
+    setTimeout(() => { generatorCopy.textContent = "Copy SHA-256"; }, 1200);
+  }
+});
+
+generatorDownload.addEventListener("click", () => {
+  const exportSize = Number(generatorSize.value);
+  const exportCanvas = document.createElement("canvas");
+  exportCanvas.width = exportSize;
+  exportCanvas.height = exportSize;
+  const exportContext = exportCanvas.getContext("2d");
+  exportContext.imageSmoothingEnabled = false;
+  exportContext.fillStyle = "#fff";
+  exportContext.fillRect(0, 0, exportSize, exportSize);
+  exportContext.drawImage(generatorCanvas, 0, 0, exportSize, exportSize);
+
+  exportCanvas.toBlob((blob) => {
+    if (!blob) {
+      generatorDownload.textContent = "Download failed";
+      setTimeout(() => { generatorDownload.textContent = "Download PNG"; }, 1500);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    const sh1FileName = generatorSh1.textContent.trim() || "SH-1";
+    link.download = `${sh1FileName}.png`;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+
+    generatorDownload.textContent = "PNG downloaded";
+    setTimeout(() => { generatorDownload.textContent = "Download PNG"; }, 1200);
+  }, "image/png");
+});
+
+generatePixels();
+
+const imageInput = document.querySelector("#imageInput");
+const imageUpload = document.querySelector("#imageUpload");
+const imageFileName = document.querySelector("#imageFileName");
+const imagePreset = document.querySelector("#imagePreset");
+const imageWidth = document.querySelector("#imageWidth");
+const imageHeight = document.querySelector("#imageHeight");
+const imageKeepRatio = document.querySelector("#imageKeepRatio");
+const imageInfo = document.querySelector("#imageInfo");
+const imageDownload = document.querySelector("#imageDownload");
+const imageResizeCanvas = document.querySelector("#imageResizeCanvas");
+const imagePreviewPlaceholder = document.querySelector("#imagePreviewPlaceholder");
+const imageResizeContext = imageResizeCanvas.getContext("2d", { alpha: true });
+
+let imageSource = null;
+let imageSourceUrl = "";
+let imageSourceBytes = 0;
+let imageOriginalWidth = 0;
+let imageOriginalHeight = 0;
+let imageAspectRatio = 1;
+let imageLastChangedDimension = "width";
+
+function formatImageBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function setImageControlsEnabled(enabled) {
+  imageFileName.disabled = !enabled;
+  imagePreset.disabled = !enabled;
+  imageWidth.disabled = !enabled;
+  imageHeight.disabled = !enabled;
+  imageKeepRatio.disabled = !enabled;
+  imageDownload.disabled = !enabled;
+}
+
+function clampImageDimension(value, maximum) {
+  const number = Math.round(Number(value));
+  if (!Number.isFinite(number)) return 1;
+  return Math.min(Math.max(number, 1), maximum);
+}
+
+function updateImageInfo(width, height) {
+  const originalPixels = imageOriginalWidth * imageOriginalHeight;
+  const outputPixels = width * height;
+  const reduction = originalPixels > 0 ? Math.max(0, Math.round((1 - outputPixels / originalPixels) * 100)) : 0;
+  imageInfo.textContent = `Original  ${imageOriginalWidth} × ${imageOriginalHeight} · ${formatImageBytes(imageSourceBytes)}\nOutput    ${width} × ${height}\nPixels    ${reduction}% smaller · PNG`;
+}
+
+function padImageFilePart(value, length = 2) {
+  return String(value).padStart(length, "0");
+}
+
+function sanitizeImageFileName(value) {
+  return value
+    .normalize("NFKC")
+    .replace(/\.png$/i, "")
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^[.\s-]+|[.\s-]+$/g, "")
+    .slice(0, 80);
+}
+
+function createAutomaticImageName() {
+  const now = new Date();
+  const width = padImageFilePart(imageResizeCanvas.width, 4);
+  const height = padImageFilePart(imageResizeCanvas.height, 4);
+  const hours = padImageFilePart(now.getHours());
+  const minutes = padImageFilePart(now.getMinutes());
+  const seconds = padImageFilePart(now.getSeconds());
+  return `SH-${width}x${height}-${hours}-${minutes}-${seconds}`;
+}
+
+function renderResizedImage() {
+  if (!imageSource) return;
+
+  let width = clampImageDimension(imageWidth.value, imageOriginalWidth);
+  let height = clampImageDimension(imageHeight.value, imageOriginalHeight);
+
+  if (imageKeepRatio.checked) {
+    if (imageLastChangedDimension === "height") {
+      width = clampImageDimension(height * imageAspectRatio, imageOriginalWidth);
+      height = clampImageDimension(width / imageAspectRatio, imageOriginalHeight);
+    } else {
+      height = clampImageDimension(width / imageAspectRatio, imageOriginalHeight);
+      width = clampImageDimension(height * imageAspectRatio, imageOriginalWidth);
+    }
+  }
+
+  imageWidth.value = width;
+  imageHeight.value = height;
+
+  if (width * height > 40000000) {
+    imageInfo.textContent = "Choose a smaller resolution (maximum 40 megapixels).";
+    imageDownload.disabled = true;
+    return;
+  }
+
+  imageResizeCanvas.width = width;
+  imageResizeCanvas.height = height;
+  imageResizeContext.clearRect(0, 0, width, height);
+  imageResizeContext.imageSmoothingEnabled = true;
+  imageResizeContext.imageSmoothingQuality = "high";
+  imageResizeContext.drawImage(imageSource, 0, 0, width, height);
+  imageResizeCanvas.classList.add("ready");
+  imagePreviewPlaceholder.hidden = true;
+  imageDownload.disabled = false;
+  updateImageInfo(width, height);
+}
+
+function applyImagePreset() {
+  if (!imageSource || imagePreset.value === "custom") return;
+  const scale = Number(imagePreset.value);
+  imageLastChangedDimension = "width";
+  imageWidth.value = Math.max(1, Math.round(imageOriginalWidth * scale));
+  imageHeight.value = Math.max(1, Math.round(imageOriginalHeight * scale));
+  renderResizedImage();
+}
+
+function loadImageFile(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    imageInfo.textContent = "Choose a valid image file.";
+    return;
+  }
+
+  if (file.size > 25 * 1024 * 1024) {
+    imageInfo.textContent = "The image is larger than 25 MB.";
+    return;
+  }
+
+  if (imageSourceUrl) URL.revokeObjectURL(imageSourceUrl);
+  imageSourceUrl = URL.createObjectURL(file);
+  imageSourceBytes = file.size;
+
+  const image = new Image();
+  image.onload = () => {
+    imageSource = image;
+    imageOriginalWidth = image.naturalWidth;
+    imageOriginalHeight = image.naturalHeight;
+    imageAspectRatio = imageOriginalWidth / imageOriginalHeight;
+    imagePreset.value = "0.5";
+    imageWidth.max = imageOriginalWidth;
+    imageHeight.max = imageOriginalHeight;
+    setImageControlsEnabled(true);
+    applyImagePreset();
+  };
+  image.onerror = () => {
+    imageSource = null;
+    setImageControlsEnabled(false);
+    imageInfo.textContent = "This image could not be opened.";
+  };
+  image.src = imageSourceUrl;
+}
+
+imageUpload.addEventListener("click", () => imageInput.click());
+imageUpload.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    imageInput.click();
+  }
+});
+
+imageUpload.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  imageUpload.classList.add("drag-over");
+});
+
+imageUpload.addEventListener("dragleave", () => imageUpload.classList.remove("drag-over"));
+imageUpload.addEventListener("drop", (event) => {
+  event.preventDefault();
+  imageUpload.classList.remove("drag-over");
+  loadImageFile(event.dataTransfer.files[0]);
+});
+
+imageInput.addEventListener("change", () => {
+  loadImageFile(imageInput.files[0]);
+  imageInput.value = "";
+});
+
+imagePreset.addEventListener("change", () => {
+  if (imagePreset.value === "custom") {
+    imageWidth.focus();
+    return;
+  }
+  applyImagePreset();
+});
+
+imageWidth.addEventListener("input", () => {
+  imagePreset.value = "custom";
+  imageLastChangedDimension = "width";
+  renderResizedImage();
+});
+
+imageHeight.addEventListener("input", () => {
+  imagePreset.value = "custom";
+  imageLastChangedDimension = "height";
+  renderResizedImage();
+});
+
+imageKeepRatio.addEventListener("change", renderResizedImage);
+
+imageDownload.addEventListener("click", () => {
+  if (!imageSource || imageDownload.disabled) return;
+
+  imageResizeCanvas.toBlob((blob) => {
+    if (!blob) {
+      imageDownload.textContent = "Download failed";
+      setTimeout(() => { imageDownload.textContent = "Download PNG"; }, 1500);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = objectUrl;
+    const customName = sanitizeImageFileName(imageFileName.value);
+    link.download = `${customName || createAutomaticImageName()}.png`;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+
+    imageDownload.textContent = "PNG downloaded";
+    setTimeout(() => { imageDownload.textContent = "Download PNG"; }, 1200);
+  }, "image/png");
+});
+
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {
+      // The site remains fully usable if offline support is unavailable.
+    });
+  });
+}
+</script>
+</body>
+</html>
